@@ -28,11 +28,15 @@ step_radix2_domain<FieldT>::step_radix2_domain(const size_t m) : evaluation_doma
     if (small_m != 1ul<<libff::log2(small_m))
         throw DomainSizeException("step_radix2(): expected small_m == 1ul<<log2(small_m)");
 
-    try { omega = libff::get_root_of_unity<FieldT>(1ul<<libff::log2(m)); }
-    catch (const std::invalid_argument& e) { throw DomainSizeException(e.what()); }
-    
+    //try { omega = libff::get_root_of_unity<FieldT>(1ul<<libff::log2(m)); }
+    //catch (const std::invalid_argument& e) { throw DomainSizeException(e.what()); }
+    bool success;
+    omega = libff::get_root_of_unity2<FieldT>(1ul<<libff::log2(m), &success);
+    if (!success) throw DomainSizeException("libff::get_root_of_unity invalid argument");
+
     big_omega = omega.squared();
-    small_omega = libff::get_root_of_unity<FieldT>(small_m);
+    small_omega = libff::get_root_of_unity2<FieldT>(small_m, &success);
+    if (!success) throw std::invalid_argument("libff::get_root_of_unity invalid argument");
 }
 
 template<typename FieldT>

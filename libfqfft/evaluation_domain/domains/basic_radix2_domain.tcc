@@ -23,18 +23,22 @@
 namespace libfqfft {
 
 template<typename FieldT>
-basic_radix2_domain<FieldT>::basic_radix2_domain(const size_t m) : evaluation_domain<FieldT>(m)
-{
-    if (m <= 1) throw InvalidSizeException("basic_radix2(): expected m > 1");
+basic_radix2_domain<FieldT>::basic_radix2_domain(const size_t m)
+    : evaluation_domain<FieldT>(m) {
+  if (m <= 1) throw InvalidSizeException("basic_radix2(): expected m > 1");
 
-    if (!std::is_same<FieldT, libff::Double>::value)
-    {
-        const size_t logm = libff::log2(m);
-        if (logm > (FieldT::s)) throw DomainSizeException("basic_radix2(): expected logm <= FieldT::s");
-    }
+  if (!std::is_same<FieldT, libff::Double>::value) {
+    const size_t logm = libff::log2(m);
+    if (logm > (FieldT::s))
+      throw DomainSizeException("basic_radix2(): expected logm <= FieldT::s");
+  }
 
-    try { omega = libff::get_root_of_unity<FieldT>(m); }
-    catch (const std::invalid_argument& e) { throw DomainSizeException(e.what()); }
+  // try { omega = libff::get_root_of_unity<FieldT>(m); }
+  // catch (const std::invalid_argument& e) { throw
+  // DomainSizeException(e.what()); }
+  bool success;
+  omega = libff::get_root_of_unity2<FieldT>(m, &success);
+  if (!success) throw DomainSizeException("libff::get_root_of_unity2 invalid argument");
 }
 
 template<typename FieldT>
