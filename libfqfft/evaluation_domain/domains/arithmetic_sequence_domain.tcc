@@ -34,6 +34,17 @@ arithmetic_sequence_domain<FieldT>::arithmetic_sequence_domain(const size_t m) :
 }
 
 template<typename FieldT>
+std::shared_ptr<arithmetic_sequence_domain<FieldT>> arithmetic_sequence_domain<FieldT>::create_ptr(const size_t m)
+{
+  std::shared_ptr<arithmetic_sequence_domain<FieldT>> result;
+  if (m <= 1) return result;
+  if (FieldT::arithmetic_generator() == FieldT::zero()) return result;
+
+  result.reset(new arithmetic_sequence_domain<FieldT>(m));
+  return result;
+}
+
+template<typename FieldT>
 void arithmetic_sequence_domain<FieldT>::FFT(std::vector<FieldT> &a)
 {
   if (a.size() != this->m) throw DomainSizeException("arithmetic: expected a.size() == this->m");

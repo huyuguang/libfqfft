@@ -15,6 +15,8 @@
 #ifndef STEP_RADIX2_DOMAIN_HPP_
 #define STEP_RADIX2_DOMAIN_HPP_
 
+#include <memory>
+
 #include <libfqfft/evaluation_domain/evaluation_domain.hpp>
 
 namespace libfqfft {
@@ -30,6 +32,7 @@ public:
     FieldT small_omega;
 
     step_radix2_domain(const size_t m);
+    static std::shared_ptr<step_radix2_domain<FieldT>> create_ptr(const size_t m);
 
     void FFT(std::vector<FieldT> &a);
     void iFFT(std::vector<FieldT> &a);

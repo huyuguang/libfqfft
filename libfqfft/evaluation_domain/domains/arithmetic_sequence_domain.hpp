@@ -14,6 +14,8 @@
 #ifndef ARITHMETIC_SEQUENCE_DOMAIN_HPP
 #define ARITHMETIC_SEQUENCE_DOMAIN_HPP
 
+#include <memory>
+
 #include <libfqfft/evaluation_domain/evaluation_domain.hpp>
 
 namespace libfqfft {
@@ -29,6 +31,7 @@ namespace libfqfft {
     void do_precomputation();
 
     arithmetic_sequence_domain(const size_t m);
+    static std::shared_ptr<arithmetic_sequence_domain<FieldT>> create_ptr(const size_t m);
 
     void FFT(std::vector<FieldT> &a);
     void iFFT(std::vector<FieldT> &a);

@@ -42,6 +42,25 @@ basic_radix2_domain<FieldT>::basic_radix2_domain(const size_t m)
 }
 
 template<typename FieldT>
+std::shared_ptr<basic_radix2_domain<FieldT>> basic_radix2_domain<FieldT>::create_ptr(const size_t m)
+{
+  std::shared_ptr<basic_radix2_domain<FieldT>> result;
+  if (m <= 1) return result;
+
+  if (!std::is_same<FieldT, libff::Double>::value) {
+    const size_t logm = libff::log2(m);
+    if (logm > (FieldT::s)) return result;
+  }
+
+  bool success;
+  libff::get_root_of_unity2<FieldT>(m, &success);
+  if (!success) return result;
+
+  result.reset(new basic_radix2_domain<FieldT>(m));
+  return result;
+}
+
+template<typename FieldT>
 void basic_radix2_domain<FieldT>::FFT(std::vector<FieldT> &a)
 {
     if (a.size() != this->m) throw DomainSizeException("basic_radix2: expected a.size() == this->m");

@@ -15,6 +15,7 @@
 #define BASIC_RADIX2_DOMAIN_HPP_
 
 #include <vector>
+#include <memory>
 
 #include <libfqfft/evaluation_domain/evaluation_domain.hpp>
 
@@ -27,7 +28,7 @@ public:
     FieldT omega;
 
     basic_radix2_domain(const size_t m);
-
+    static std::shared_ptr<basic_radix2_domain<FieldT>> create_ptr(const size_t m);
     void FFT(std::vector<FieldT> &a);
     void iFFT(std::vector<FieldT> &a);
     void cosetFFT(std::vector<FieldT> &a, const FieldT &g);

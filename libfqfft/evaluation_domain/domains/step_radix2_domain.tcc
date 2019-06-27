@@ -40,6 +40,29 @@ step_radix2_domain<FieldT>::step_radix2_domain(const size_t m) : evaluation_doma
 }
 
 template<typename FieldT>
+std::shared_ptr<step_radix2_domain<FieldT>> step_radix2_domain<FieldT>::create_ptr(const size_t m)
+{
+  std::shared_ptr<step_radix2_domain<FieldT>> result;
+  if (m <= 1) return result;
+
+  auto small_m = m - 1ul<<(libff::log2(m)-1);;
+
+  if (small_m != 1ul << libff::log2(small_m)) return result;
+
+  bool success;
+  auto omega =
+      libff::get_root_of_unity2<FieldT>(1ul << libff::log2(m), &success);
+  if (!success) return result;
+
+  auto big_omega = omega.squared();
+  auto small_omega = libff::get_root_of_unity2<FieldT>(small_m, &success);
+  if (!success) return result;
+
+  result.reset(new step_radix2_domain<FieldT>(m));
+  return result;
+}
+
+template<typename FieldT>
 void step_radix2_domain<FieldT>::FFT(std::vector<FieldT> &a)
 {
     if (a.size() != this->m) throw DomainSizeException("step_radix2: expected a.size() == this->m");

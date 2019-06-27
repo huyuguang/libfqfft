@@ -32,12 +32,32 @@ namespace libfqfft {
 template<typename FieldT>
 std::shared_ptr<evaluation_domain<FieldT> > get_evaluation_domain(const size_t min_size)
 {
+    libff::enter_block("Call to get_evaluation_domain");
     std::shared_ptr<evaluation_domain<FieldT> > result;
 
     const size_t big = 1ul<<(libff::log2(min_size)-1);
     const size_t small = min_size - big;
     const size_t rounded_small = (1ul<<libff::log2(small));
 
+    result = basic_radix2_domain<FieldT>::create_ptr(min_size);
+    if (!result) result = extended_radix2_domain<FieldT>::create_ptr(min_size);
+    if (!result) result = step_radix2_domain<FieldT>::create_ptr(min_size);
+    if (!result) result = basic_radix2_domain<FieldT>::create_ptr(big + rounded_small);
+    if (!result) result = extended_radix2_domain<FieldT>::create_ptr(big + rounded_small);
+    if (!result) result = step_radix2_domain<FieldT>::create_ptr(big + rounded_small);
+    if (!result) result = geometric_sequence_domain<FieldT>::create_ptr(min_size);
+    if (!result) result = arithmetic_sequence_domain<FieldT>::create_ptr(min_size);
+
+    if (!result) {
+      std::cerr << "oops: get_evaluation_domain: no matching domain " << min_size << "\n";
+      throw DomainSizeException("get_evaluation_domain: no matching domain");
+    }
+
+    libff::leave_block("Compute evaluations of A, B, C, H at t");
+
+    return result;
+
+#if 0
     try { result.reset(new basic_radix2_domain<FieldT>(min_size)); }
     catch(...) { try { result.reset(new extended_radix2_domain<FieldT>(min_size)); }
     catch(...) { try { result.reset(new step_radix2_domain<FieldT>(min_size)); }
@@ -47,8 +67,8 @@ std::shared_ptr<evaluation_domain<FieldT> > get_evaluation_domain(const size_t m
     catch(...) { try { result.reset(new geometric_sequence_domain<FieldT>(min_size)); }
     catch(...) { try { result.reset(new arithmetic_sequence_domain<FieldT>(min_size)); }
     catch(...) { throw DomainSizeException("get_evaluation_domain: no matching domain"); }}}}}}}}
-
     return result;
+#endif
 }
 
 } // libfqfft

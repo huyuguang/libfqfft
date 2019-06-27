@@ -34,6 +34,17 @@ geometric_sequence_domain<FieldT>::geometric_sequence_domain(const size_t m) : e
 }
 
 template<typename FieldT>
+std::shared_ptr<geometric_sequence_domain<FieldT>> geometric_sequence_domain<FieldT>::create_ptr(const size_t m)
+{
+  std::shared_ptr<geometric_sequence_domain<FieldT>> result;
+  if (m <= 1) return result;
+  if (FieldT::geometric_generator() == FieldT::zero()) return result;
+  
+  result.reset(new geometric_sequence_domain<FieldT>(m));
+  return result;
+}
+
+template<typename FieldT>
 void geometric_sequence_domain<FieldT>::FFT(std::vector<FieldT> &a)
 { 
   if (a.size() != this->m) throw DomainSizeException("geometric: expected a.size() == this->m");
