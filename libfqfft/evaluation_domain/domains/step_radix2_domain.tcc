@@ -45,7 +45,8 @@ std::shared_ptr<step_radix2_domain<FieldT>> step_radix2_domain<FieldT>::create_p
   std::shared_ptr<step_radix2_domain<FieldT>> result;
   if (m <= 1) return result;
 
-  auto small_m = m - 1ul<<(libff::log2(m)-1);;
+  auto big_m = 1ul<<(libff::log2(m)-1);
+  auto small_m = m - big_m;
 
   if (small_m != 1ul << libff::log2(small_m)) return result;
 
@@ -234,6 +235,7 @@ FieldT step_radix2_domain<FieldT>::compute_vanishing_polynomial(const FieldT &t)
 template<typename FieldT>
 void step_radix2_domain<FieldT>::add_poly_Z(const FieldT &coeff, std::vector<FieldT> &H)
 {
+    libff::enter_block("step_radix2_domain::add_poly_Z");
     if (H.size() != this->m+1) throw DomainSizeException("step_radix2: expected H.size() == this->m+1");
 
     const FieldT omega_to_small_m = omega^small_m;
@@ -242,6 +244,8 @@ void step_radix2_domain<FieldT>::add_poly_Z(const FieldT &coeff, std::vector<Fie
     H[big_m] -= coeff * omega_to_small_m;
     H[small_m] -= coeff;
     H[0] += coeff * omega_to_small_m;
+
+    libff::leave_block("step_radix2_domain::add_poly_Z");
 }
 
 template<typename FieldT>

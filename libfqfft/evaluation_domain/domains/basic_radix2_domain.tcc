@@ -117,10 +117,14 @@ FieldT basic_radix2_domain<FieldT>::compute_vanishing_polynomial(const FieldT &t
 template<typename FieldT>
 void basic_radix2_domain<FieldT>::add_poly_Z(const FieldT &coeff, std::vector<FieldT> &H)
 {
+    libff::enter_block("basic_radix2_domain::add_poly_Z");
+
     if (H.size() != this->m+1) throw DomainSizeException("basic_radix2: expected H.size() == this->m+1");
 
     H[this->m] += coeff;
     H[0] -= coeff;
+
+    libff::leave_block("basic_radix2_domain::add_poly_Z");
 }
 
 template<typename FieldT>

@@ -219,6 +219,8 @@ FieldT geometric_sequence_domain<FieldT>::compute_vanishing_polynomial(const Fie
 template<typename FieldT>
 void geometric_sequence_domain<FieldT>::add_poly_Z(const FieldT &coeff, std::vector<FieldT> &H)
 {
+  libff::enter_block("geometric_sequence_domain::add_poly_Z");
+
   if (H.size() != this->m+1) throw DomainSizeException("geometric: expected H.size() == this->m+1");
 
   if (!this->precomputation_sentinel) do_precomputation();
@@ -244,6 +246,8 @@ void geometric_sequence_domain<FieldT>::add_poly_Z(const FieldT &coeff, std::vec
   {
     H[i] += (x[i] * coeff);
   }
+
+  libff::leave_block("geometric_sequence_domain::add_poly_Z");
 }
 
 template<typename FieldT>

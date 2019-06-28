@@ -53,6 +53,10 @@ std::shared_ptr<evaluation_domain<FieldT> > get_evaluation_domain(const size_t m
       throw DomainSizeException("get_evaluation_domain: no matching domain");
     }
 
+    if (!libff::inhibit_profiling_info) {
+      std::cout << "get_evaluation_domain(" << min_size << ")"
+                << " " << result->m << "\n";
+    }
     libff::leave_block("Compute evaluations of A, B, C, H at t");
 
     return result;

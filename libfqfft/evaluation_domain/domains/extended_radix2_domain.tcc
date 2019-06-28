@@ -52,8 +52,10 @@ std::shared_ptr<extended_radix2_domain<FieldT>> extended_radix2_domain<FieldT>::
     if (logm != (FieldT::s + 1)) return result;
   }
 
+  auto small_m = m / 2;
+
   bool success;
-  libff::get_root_of_unity2<FieldT>(m / 2, &success);
+  libff::get_root_of_unity2<FieldT>(small_m, &success);
   if (!success) return result;
 
   result.reset(new extended_radix2_domain<FieldT>(m));
@@ -172,6 +174,8 @@ FieldT extended_radix2_domain<FieldT>::compute_vanishing_polynomial(
 template <typename FieldT>
 void extended_radix2_domain<FieldT>::add_poly_Z(const FieldT &coeff,
                                                 std::vector<FieldT> &H) {
+  libff::enter_block("extended_radix2_domain::add_poly_Z");
+
   if (H.size() != this->m + 1)
     throw DomainSizeException(
         "extended_radix2: expected H.size() == this->m+1");
@@ -181,6 +185,8 @@ void extended_radix2_domain<FieldT>::add_poly_Z(const FieldT &coeff,
   H[this->m] += coeff;
   H[small_m] -= coeff * (shift_to_small_m + FieldT::one());
   H[0] += coeff * shift_to_small_m;
+
+  libff::leave_block("extended_radix2_domain::add_poly_Z");
 }
 
 template <typename FieldT>
