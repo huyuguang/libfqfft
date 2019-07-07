@@ -25,7 +25,7 @@ void polynomial_evaluation_example ()
 
   for (size_t i = 0; i < f.size(); i++)
   {
-    printf("%ld: %ld\n", i, f[i].as_ulong());
+    printf("%zu: %zu\n", i, f[i].as_ulong());
   }
 }
 

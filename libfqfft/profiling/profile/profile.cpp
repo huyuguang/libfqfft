@@ -142,7 +142,7 @@ void profile(const std::string domain_sizes,
                      << FieldT::mul_cnt << ","
                      << FieldT::inv_cnt << "\n";
 
-    printf("%ld: %f seconds, %ld kilobytes\n", n, runtime, r_usage.ru_maxrss);
+    printf("%zu: %f seconds, %zd kilobytes\n", n, runtime, (size_t)r_usage.ru_maxrss);
   }
 
   /* Close files */

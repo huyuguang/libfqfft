@@ -15,7 +15,7 @@
 #define BASIC_OPERATIONS_TCC_
 
 #include <algorithm>
-
+#include <functional>
 #include <libfqfft/evaluation_domain/domains/basic_radix2_domain_aux.hpp>
 #include <libfqfft/kronecker_substitution/kronecker_substitution.hpp>
 #include <libfqfft/tools/exceptions.hpp>

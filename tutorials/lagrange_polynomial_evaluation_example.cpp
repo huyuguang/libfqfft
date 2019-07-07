@@ -25,7 +25,7 @@ void lagrange_polynomial_evaluation_example ()
 
   for (size_t i = 0; i < a.size(); i++)
   {
-    printf("%ld: %lu\n", i, a[i].as_ulong());
+    printf("%zd: %zu\n", i, a[i].as_ulong());
   }
 }
 

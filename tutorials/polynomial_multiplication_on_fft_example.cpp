@@ -28,7 +28,7 @@ void polynomial_multiplication_on_FFT_example ()
   /* Print out the polynomial in human-readable form */
   for (size_t i = 0; i < c.size(); i++)
   {
-    unsigned long coefficient = c[i].as_ulong();
+    size_t coefficient = c[i].as_ulong();
 
     if (i == 0) std::cout << coefficient << " + ";
     else if (i < 6) std::cout << coefficient << "x^" << i << " + ";

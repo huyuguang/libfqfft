@@ -19,6 +19,7 @@
 #ifndef GET_EVALUATION_DOMAIN_TCC_
 #define GET_EVALUATION_DOMAIN_TCC_
 
+#include <libff/common/profiling.hpp>
 #include <libfqfft/evaluation_domain/domains/arithmetic_sequence_domain.hpp>
 #include <libfqfft/evaluation_domain/domains/basic_radix2_domain.hpp>
 #include <libfqfft/evaluation_domain/domains/extended_radix2_domain.hpp>
@@ -35,9 +36,9 @@ std::shared_ptr<evaluation_domain<FieldT> > get_evaluation_domain(const size_t m
     libff::enter_block("Call to get_evaluation_domain");
     std::shared_ptr<evaluation_domain<FieldT> > result;
 
-    const size_t big = 1ul<<(libff::log2(min_size)-1);
+    const size_t big = ((size_t)1) <<(libff::log2(min_size)-1);
     const size_t small = min_size - big;
-    const size_t rounded_small = (1ul<<libff::log2(small));
+    const size_t rounded_small = (((size_t)1) <<libff::log2(small));
 
     result = basic_radix2_domain<FieldT>::create_ptr(min_size);
     if (!result) result = extended_radix2_domain<FieldT>::create_ptr(min_size);

@@ -22,16 +22,16 @@ step_radix2_domain<FieldT>::step_radix2_domain(const size_t m) : evaluation_doma
 {
     if (m <= 1) throw InvalidSizeException("step_radix2(): expected m > 1");
 
-    big_m = 1ul<<(libff::log2(m)-1);
+    big_m = ((size_t)1) <<(libff::log2(m)-1);
     small_m = m - big_m;
 
-    if (small_m != 1ul<<libff::log2(small_m))
-        throw DomainSizeException("step_radix2(): expected small_m == 1ul<<log2(small_m)");
+    if (small_m != ((size_t)1) <<libff::log2(small_m))
+        throw DomainSizeException("step_radix2(): expected small_m == ((size_t)1)<<log2(small_m)");
 
-    //try { omega = libff::get_root_of_unity<FieldT>(1ul<<libff::log2(m)); }
+    //try { omega = libff::get_root_of_unity<FieldT>((size_t)1ul<<libff::log2(m)); }
     //catch (const std::invalid_argument& e) { throw DomainSizeException(e.what()); }
     bool success;
-    omega = libff::get_root_of_unity2<FieldT>(1ul<<libff::log2(m), &success);
+    omega = libff::get_root_of_unity2<FieldT>(((size_t)1)<<libff::log2(m), &success);
     if (!success) throw DomainSizeException("libff::get_root_of_unity invalid argument");
 
     big_omega = omega.squared();
@@ -45,14 +45,14 @@ std::shared_ptr<step_radix2_domain<FieldT>> step_radix2_domain<FieldT>::create_p
   std::shared_ptr<step_radix2_domain<FieldT>> result;
   if (m <= 1) return result;
 
-  auto big_m = 1ul<<(libff::log2(m)-1);
+  auto big_m = ((size_t)1)<<(libff::log2(m)-1);
   auto small_m = m - big_m;
 
-  if (small_m != 1ul << libff::log2(small_m)) return result;
+  if (small_m != ((size_t)1) << libff::log2(small_m)) return result;
 
   bool success;
   auto omega =
-      libff::get_root_of_unity2<FieldT>(1ul << libff::log2(m), &success);
+      libff::get_root_of_unity2<FieldT>(((size_t)1) << libff::log2(m), &success);
   if (!success) return result;
 
   auto big_omega = omega.squared();
@@ -80,7 +80,7 @@ void step_radix2_domain<FieldT>::FFT(std::vector<FieldT> &a)
     }
 
     std::vector<FieldT> e(small_m, FieldT::zero());
-    const size_t compr = 1ul<<(libff::log2(big_m) - libff::log2(small_m));
+    const size_t compr = ((size_t)1) <<(libff::log2(big_m) - libff::log2(small_m));
     for (size_t i = 0; i < small_m; ++i)
     {
         for (size_t j = 0; j < compr; ++j)
@@ -140,7 +140,7 @@ void step_radix2_domain<FieldT>::iFFT(std::vector<FieldT> &a)
         a[i] = U0[i];
     }
 
-    const size_t compr = 1ul<<(libff::log2(big_m) - libff::log2(small_m));
+    const size_t compr = ((size_t)1) <<(libff::log2(big_m) - libff::log2(small_m));
     for (size_t i = 0; i < small_m; ++i)
     {
         for (size_t j = 1; j < compr; ++j)

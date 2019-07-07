@@ -44,8 +44,8 @@ namespace libfqfft {
 template<typename FieldT>
 void _basic_serial_radix2_FFT(std::vector<FieldT> &a, const FieldT &omega)
 {
-    const size_t n = a.size(), logn = log2(n);
-    if (n != (1u << logn)) throw DomainSizeException("expected n == (1u << logn)");
+    const size_t n = a.size(), logn = libff::log2(n);
+    if (n != ((size_t)1 << logn)) throw DomainSizeException("expected n == ((size_t)1 << logn)");
 
     /* swapping in place (from Storer's book) */
     for (size_t k = 0; k < n; ++k)
@@ -60,8 +60,9 @@ void _basic_serial_radix2_FFT(std::vector<FieldT> &a, const FieldT &omega)
     {
         // w_m is 2^s-th root of unity now
         const FieldT w_m = omega^(n/(2*m));
-
+#ifndef _MSC_VER
         asm volatile  ("/* pre-inner */");
+#endif
         for (size_t k = 0; k < n; k += 2*m)
         {
             FieldT w = FieldT::one();
@@ -73,7 +74,9 @@ void _basic_serial_radix2_FFT(std::vector<FieldT> &a, const FieldT &omega)
                 w *= w_m;
             }
         }
+#ifndef _MSC_VER
         asm volatile ("/* post-inner */");
+#endif
         m *= 2;
     }
 }
@@ -81,11 +84,11 @@ void _basic_serial_radix2_FFT(std::vector<FieldT> &a, const FieldT &omega)
 template<typename FieldT>
 void _basic_parallel_radix2_FFT_inner(std::vector<FieldT> &a, const FieldT &omega, const size_t log_cpus)
 {
-    const size_t num_cpus = 1ul<<log_cpus;
+    const size_t num_cpus = ((size_t)1) <<log_cpus;
 
     const size_t m = a.size();
-    const size_t log_m = log2(m);
-    if (m != 1ul<<log_m) throw DomainSizeException("expected m == 1ul<<log_m");
+    const size_t log_m = libff::log2(m);
+    if (m != ((size_t)1) <<log_m) throw DomainSizeException("expected m == ((size_t)1)<<log_m");
 
     if (log_m < log_cpus)
     {
@@ -96,7 +99,7 @@ void _basic_parallel_radix2_FFT_inner(std::vector<FieldT> &a, const FieldT &omeg
     std::vector<std::vector<FieldT> > tmp(num_cpus);
     for (size_t j = 0; j < num_cpus; ++j)
     {
-        tmp[j].resize(1ul<<(log_m-log_cpus), FieldT::zero());
+        tmp[j].resize(((size_t)1) <<(log_m-log_cpus), FieldT::zero());
     }
 
 #ifdef MULTICORE
@@ -108,12 +111,12 @@ void _basic_parallel_radix2_FFT_inner(std::vector<FieldT> &a, const FieldT &omeg
         const FieldT omega_step = omega^(j<<(log_m - log_cpus));
 
         FieldT elt = FieldT::one();
-        for (size_t i = 0; i < 1ul<<(log_m - log_cpus); ++i)
+        for (size_t i = 0; i < ((size_t)1) <<(log_m - log_cpus); ++i)
         {
             for (size_t s = 0; s < num_cpus; ++s)
             {
                 // invariant: elt is omega^(j*idx)
-                const size_t idx = (i + (s<<(log_m - log_cpus))) % (1u << log_m);
+                const size_t idx = (i + (s<<(log_m - log_cpus))) % (((size_t)1) << log_m);
                 tmp[j][i] += a[idx] * elt;
                 elt *= omega_step;
             }
@@ -136,7 +139,7 @@ void _basic_parallel_radix2_FFT_inner(std::vector<FieldT> &a, const FieldT &omeg
 #endif
     for (size_t i = 0; i < num_cpus; ++i)
     {
-        for (size_t j = 0; j < 1ul<<(log_m - log_cpus); ++j)
+        for (size_t j = 0; j < ((size_t)1) <<(log_m - log_cpus); ++j)
         {
             // now: i = idx >> (log_m - log_cpus) and j = idx % (1u << (log_m - log_cpus)), for idx = ((i<<(log_m-log_cpus))+j) % (1u << log_m)
             a[(j<<log_cpus) + i] = tmp[i][j];
@@ -152,7 +155,7 @@ void _basic_parallel_radix2_FFT(std::vector<FieldT> &a, const FieldT &omega)
 #else
     const size_t num_cpus = 1;
 #endif
-    const size_t log_cpus = ((num_cpus & (num_cpus - 1)) == 0 ? log2(num_cpus) : log2(num_cpus) - 1);
+    const size_t log_cpus = ((num_cpus & (num_cpus - 1)) == 0 ? libff::log2(num_cpus) : libff::log2(num_cpus) - 1);
 
 #ifdef DEBUG
     libff::print_indent(); printf("* Invoking parallel FFT on 2^%zu CPUs (omp_get_max_threads = %zu)\n", log_cpus, num_cpus);
@@ -187,7 +190,7 @@ std::vector<FieldT> _basic_radix2_evaluate_all_lagrange_polynomials(const size_t
         return std::vector<FieldT>(1, FieldT::one());
     }
 
-    if (m != (1u << libff::log2(m))) throw DomainSizeException("expected m == (1u << log2(m))");
+    if (m != ((size_t)1 << libff::log2(m))) throw DomainSizeException("expected m == (1u << log2(m))");
 
     const FieldT omega = libff::get_root_of_unity<FieldT>(m);
 

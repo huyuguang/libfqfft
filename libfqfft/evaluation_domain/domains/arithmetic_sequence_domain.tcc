@@ -245,7 +245,7 @@ void arithmetic_sequence_domain<FieldT>::divide_by_Z_on_coset(std::vector<FieldT
 template<typename FieldT>
 void arithmetic_sequence_domain<FieldT>::do_precomputation()
 {
-  compute_subproduct_tree(log2(this->m), this->subproduct_tree);
+  compute_subproduct_tree((size_t)log2(this->m), this->subproduct_tree);
 
   this->arithmetic_generator = FieldT::arithmetic_generator();
 

@@ -182,7 +182,7 @@ namespace libfqfft {
         for (size_t i = 0; i < m; i++)
         {
           TypeParam e = evaluate_lagrange_polynomial(m, d, t, i);
-          printf("%ld == %ld\n", e.as_ulong(), a[i].as_ulong());
+          printf("%zu == %zu\n", e.as_ulong(), a[i].as_ulong());
           EXPECT_TRUE(e == a[i]);
         }
       }
