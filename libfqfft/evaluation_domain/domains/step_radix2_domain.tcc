@@ -25,18 +25,26 @@ step_radix2_domain<FieldT>::step_radix2_domain(const size_t m) : evaluation_doma
     big_m = ((size_t)1) <<(libff::log2(m)-1);
     small_m = m - big_m;
 
-    if (small_m != ((size_t)1) <<libff::log2(small_m))
-        throw DomainSizeException("step_radix2(): expected small_m == ((size_t)1)<<log2(small_m)");
+    if (small_m != ((size_t)1) << libff::log2(small_m)) {
+      std::cerr << "step_radix2(): expected small_m == ((size_t)1)<<libff::log2(small_m): " << small_m << "\n";
+      throw DomainSizeException("step_radix2(): expected small_m == ((size_t)1)<<libff::log2(small_m)");
+    }        
 
     //try { omega = libff::get_root_of_unity<FieldT>((size_t)1ul<<libff::log2(m)); }
     //catch (const std::invalid_argument& e) { throw DomainSizeException(e.what()); }
     bool success;
     omega = libff::get_root_of_unity2<FieldT>(((size_t)1)<<libff::log2(m), &success);
-    if (!success) throw DomainSizeException("libff::get_root_of_unity invalid argument");
+    if (!success) {
+      std::cerr << "get_root_of_unity2 failed: " << ((size_t)1)<<libff::log2(m) << "\n";
+      throw DomainSizeException("libff::get_root_of_unity invalid argument (1)");
+    }
 
     big_omega = omega.squared();
     small_omega = libff::get_root_of_unity2<FieldT>(small_m, &success);
-    if (!success) throw std::invalid_argument("libff::get_root_of_unity invalid argument");
+    if (!success) {
+      std::cerr << "get_root_of_unity2 failed: " << small_m << "\n";
+      throw std::invalid_argument("libff::get_root_of_unity invalid argument (2)");
+    }
 }
 
 template<typename FieldT>

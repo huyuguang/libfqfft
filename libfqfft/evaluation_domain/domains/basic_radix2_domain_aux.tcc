@@ -190,7 +190,7 @@ std::vector<FieldT> _basic_radix2_evaluate_all_lagrange_polynomials(const size_t
         return std::vector<FieldT>(1, FieldT::one());
     }
 
-    if (m != ((size_t)1 << libff::log2(m))) throw DomainSizeException("expected m == (1u << log2(m))");
+    if (m != ((size_t)1 << libff::log2(m))) throw DomainSizeException("expected m == (1u << libff::log2(m))");
 
     const FieldT omega = libff::get_root_of_unity<FieldT>(m);
 

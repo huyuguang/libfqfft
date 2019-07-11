@@ -58,7 +58,7 @@ std::shared_ptr<evaluation_domain<FieldT> > get_evaluation_domain(const size_t m
       std::cout << "get_evaluation_domain(" << min_size << ")"
                 << " " << result->m << "\n";
     }
-    libff::leave_block("Compute evaluations of A, B, C, H at t");
+    libff::leave_block("Call to get_evaluation_domain");
 
     return result;
 
