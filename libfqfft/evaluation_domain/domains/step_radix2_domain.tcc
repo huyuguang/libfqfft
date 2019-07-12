@@ -42,7 +42,7 @@ step_radix2_domain<FieldT>::step_radix2_domain(const size_t m) : evaluation_doma
     big_omega = omega.squared();
     small_omega = libff::get_root_of_unity2<FieldT>(small_m, &success);
     if (!success) {
-      std::cerr << "get_root_of_unity2 failed: " << small_m << "\n";
+      std::cerr << "get_root_of_unity2 failed: " << small_m << "," << small_omega << "\n";
       throw std::invalid_argument("libff::get_root_of_unity invalid argument (2)");
     }
 }
